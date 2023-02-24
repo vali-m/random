@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sum Calculator</title>
+  <script>
+    function calculateSum() {
+      // get the input sum
+      let sum = parseInt(document.getElementById("sum").value);
+
+      // define the denominations of Romanian lei bills
+      let denominations = [500, 200, 100, 50, 10, 5, 1];
+
+      // initialize an empty array to store the results
+      let results = [];
+
+      // iterate over the denominations and find all possible ways to create the sum
+      findPossibleWays(sum, 0, [], denominations, results);
+
+      // display the results
+      let resultText = "";
+      for (let i = 0; i < results.length; i++) {
+        let result = results[i];
+        let resultString = "";
+        for (let j = 0; j < result.length; j++) {
+          resultString += result[j].count + " x " + result[j].value + " RON, ";
+        }
+        resultString = resultString.slice(0, -2);
+        resultText += (i + 1) + ". " + resultString + "<br>";
+      }
+      document.getElementById("results").innerHTML = resultText;
+    }
+
+    function findPossibleWays(sum, index, currentResult, denominations, results) {
+      if (sum === 0) {
+        results.push(currentResult.slice());
+        return;
+      }
+
+      if (index >= denominations.length) {
+        return;
+      }
+
+      let denomination = denominations[index];
+      let maxCount = Math.floor(sum / denomination);
+      for (let count = maxCount; count >= 0; count--) {
+        if (count > 0) {
+          currentResult.push({value: denomination, count: count});
+        }
+        findPossibleWays(sum - count * denomination, index + 1, currentResult, denominations, results);
+        if (count > 0) {
+          currentResult.pop();
+        }
+      }
+    }
+  </script>
+</head>
+<body>
+<h1>Sum Calculator</h1>
+<p>Enter a sum in Romanian lei:</p>
+<input type="text" id="sum" name="sum">
+<button onclick="calculateSum()">Calculate</button>
+<p>Possible ways to create the sum:</p>
+<div id="results"></div>
+</body>
+</html>
